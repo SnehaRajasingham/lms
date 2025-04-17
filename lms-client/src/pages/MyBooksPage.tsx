@@ -41,14 +41,16 @@ export default function MyBooksPage() {
         'success',
       );
       fetchBorrowedBooks();
-    } catch (err: any) {
-      Swal.fire(
-        'Error',
-        err.response?.data?.message || 'Return failed.',
-        'error',
-      );
+    } catch (err: unknown) {
+      if (err && typeof err === 'object' && 'response' in err) {
+        const error = err as { response: { data: { message: string } } };
+        Swal.fire('Error', error.response.data.message || 'Return failed.', 'error');
+      } else {
+        Swal.fire('Error', 'Return failed.', 'error');
+      }
     }
   };
+  
 
   useEffect(() => {
     fetchBorrowedBooks();

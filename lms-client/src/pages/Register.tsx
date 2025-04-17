@@ -68,12 +68,20 @@ export default function Register({ onSwitch }: Props) {
       Swal.fire('Success', 'Registration successful!', 'success').then(() => {
         navigate('/dashboard');
       });
-    } catch (error: any) {
-      Swal.fire(
-        'Registration Failed',
-        error.response?.data?.message || 'Something went wrong.',
-        'error',
-      );
+    } catch (err: unknown) {
+      let errorMessage = 'Something went wrong.';
+
+      if (
+        err &&
+        typeof err === 'object' &&
+        'response' in err &&
+        typeof (err as { response?: { data?: { message?: string } } }).response?.data?.message === 'string'
+      ) {
+        errorMessage = (err as { response: { data: { message: string } } })
+          .response.data.message;
+      }
+
+      Swal.fire('Registration Failed', errorMessage, 'error');
     }
   };
 

@@ -31,12 +31,20 @@ export default function StudentBorrowPage() {
       const res = await api.post(`/borrow/${bookId}`);
       Swal.fire('Success', res.data.message, 'success');
       fetchBooks();
-    } catch (err: any) {
-      Swal.fire(
-        'Error',
-        err.response?.data?.message || 'Borrow failed.',
-        'error',
-      );
+    } catch (err: unknown) {
+      let errorMessage = 'Borrow failed.';
+
+      if (
+        err &&
+        typeof err === 'object' &&
+        'response' in err &&
+        typeof (err as { response?: { data?: { message?: string } } }).response?.data?.message === 'string'
+      ) {
+        errorMessage = (err as { response: { data: { message: string } } })
+          .response.data.message;
+      }
+
+      Swal.fire('Error', errorMessage, 'error');
     }
   };
 

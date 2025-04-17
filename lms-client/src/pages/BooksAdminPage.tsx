@@ -4,6 +4,7 @@ import Swal from 'sweetalert2';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { bookSchema } from '../schemas/bookSchema';
+import { AxiosError } from 'axios';
 
 interface Book {
   _id?: string;
@@ -46,19 +47,31 @@ export default function BooksAdminPage() {
         await api.post('/books', data);
         Swal.fire('Added!', 'Book added successfully.', 'success');
       }
+
       fetchBooks();
       setShowModal(false);
       setEditingBook(null);
       reset();
-    } catch (err) {
+    } catch (err: unknown) {
+      let errorMessage = 'Something went wrong.';
+
+      if (
+        isAxiosError(err) &&
+        typeof (err.response?.data as { message?: string })?.message === 'string'
+      ) {
+        if (err.response && err.response.data && typeof err.response.data === 'object' && 'message' in err.response.data) {
+          errorMessage = (err.response.data as { message: string }).message;
+        }
+      }
+
       console.error('Error saving book', err);
-      Swal.fire(
-        'Error',
-        (err as any).response?.data?.message || 'Something went wrong.',
-        'error',
-      );
+      Swal.fire('Error', errorMessage, 'error');
     }
   };
+
+  function isAxiosError(error: unknown): error is AxiosError {
+    return (error as AxiosError).isAxiosError !== undefined;
+  }
 
   const handleDelete = async (id: string) => {
     const confirmed = await Swal.fire({
