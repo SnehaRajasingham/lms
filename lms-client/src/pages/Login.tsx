@@ -44,6 +44,7 @@ export default function Login({ onSwitch }: Props) {
             ?.data?.message) ||
         'Something went wrong.';
       Swal.fire('Login Failed', errorMessage, 'error');
+      console.error('Login Failed', errorMessage);
     }
   };
 
