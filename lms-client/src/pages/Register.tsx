@@ -35,7 +35,11 @@ export default function Register({ onSwitch }: Props) {
   const validateForm = () => {
     const { username, email, password } = formData;
     if (username.trim().length < 3) {
-      Swal.fire('Validation Error', 'Username must be at least 3 characters.', 'warning');
+      Swal.fire(
+        'Validation Error',
+        'Username must be at least 3 characters.',
+        'warning',
+      );
       return false;
     }
     if (!email.includes('@')) {
@@ -43,7 +47,11 @@ export default function Register({ onSwitch }: Props) {
       return false;
     }
     if (password.length < 6) {
-      Swal.fire('Validation Error', 'Password must be at least 6 characters.', 'warning');
+      Swal.fire(
+        'Validation Error',
+        'Password must be at least 6 characters.',
+        'warning',
+      );
       return false;
     }
     return true;
@@ -61,17 +69,25 @@ export default function Register({ onSwitch }: Props) {
         navigate('/dashboard');
       });
     } catch (error: any) {
-      Swal.fire('Registration Failed', error.response?.data?.message || 'Something went wrong.', 'error');
+      Swal.fire(
+        'Registration Failed',
+        error.response?.data?.message || 'Something went wrong.',
+        'error',
+      );
     }
   };
 
   return (
     <div className="p-8 w-full h-full flex flex-col justify-center">
       <form onSubmit={handleSubmit} className="space-y-4">
-        <h2 className="text-3xl font-bold text-center text-gray-800 mb-2">Register</h2>
+        <h2 className="text-3xl font-bold text-center text-gray-800 mb-2">
+          Register
+        </h2>
 
         <div>
-          <label className="block mb-1 font-medium text-gray-700">Username</label>
+          <label className="block mb-1 font-medium text-gray-700">
+            Username
+          </label>
           <input
             type="text"
             name="username"
@@ -95,7 +111,9 @@ export default function Register({ onSwitch }: Props) {
         </div>
 
         <div>
-          <label className="block mb-1 font-medium text-gray-700">Password</label>
+          <label className="block mb-1 font-medium text-gray-700">
+            Password
+          </label>
           <input
             type="password"
             name="password"
@@ -118,7 +136,10 @@ export default function Register({ onSwitch }: Props) {
 
       <p className="mt-4 text-center text-gray-600">
         Already have an account?{' '}
-        <button onClick={onSwitch} className="text-green-600 hover:underline font-medium">
+        <button
+          onClick={onSwitch}
+          className="text-green-600 hover:underline font-medium"
+        >
           Sign in
         </button>
       </p>

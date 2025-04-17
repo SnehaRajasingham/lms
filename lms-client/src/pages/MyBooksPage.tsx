@@ -37,8 +37,7 @@ export default function MyBooksPage() {
       const res = await api.post(`/borrow/return/${bookId}`);
       Swal.fire(
         'Success',
-        res.data.message +
-          (res.data.fine ? ` | Fine: £ ${res.data.fine}` : ''),
+        res.data.message + (res.data.fine ? ` | Fine: £ ${res.data.fine}` : ''),
         'success',
       );
       fetchBorrowedBooks();

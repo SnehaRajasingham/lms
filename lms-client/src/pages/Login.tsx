@@ -36,9 +36,13 @@ export default function Login({ onSwitch }: Props) {
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('user', JSON.stringify(response.data?.user));
       navigate('/dashboard');
-    } catch (error) {
+    } catch (error: unknown) {
       const errorMessage =
-        (error as any)?.response?.data?.message || 'Something went wrong.';
+        (error instanceof Error &&
+          'response' in error &&
+          (error as { response?: { data?: { message?: string } } }).response
+            ?.data?.message) ||
+        'Something went wrong.';
       Swal.fire('Login Failed', errorMessage, 'error');
     }
   };
@@ -51,7 +55,9 @@ export default function Login({ onSwitch }: Props) {
         </h2>
 
         <div>
-          <label className="block text-gray-700 font-medium mb-1">Username</label>
+          <label className="block text-gray-700 font-medium mb-1">
+            Username
+          </label>
           <input
             type="text"
             name="username"
@@ -64,7 +70,9 @@ export default function Login({ onSwitch }: Props) {
         </div>
 
         <div>
-          <label className="block text-gray-700 font-medium mb-1">Password</label>
+          <label className="block text-gray-700 font-medium mb-1">
+            Password
+          </label>
           <input
             type="password"
             name="password"
@@ -86,7 +94,10 @@ export default function Login({ onSwitch }: Props) {
 
       <p className="mt-4 text-center text-gray-600">
         Don&apos;t have an account?{' '}
-        <button onClick={onSwitch} className="text-blue-600 hover:underline font-medium">
+        <button
+          onClick={onSwitch}
+          className="text-blue-600 hover:underline font-medium"
+        >
           Sign up
         </button>
       </p>

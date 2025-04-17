@@ -9,7 +9,7 @@ interface TokenPayload {
 
 export default function ProtectedRoute({
   children,
-  allowedRoles
+  allowedRoles,
 }: {
   children: JSX.Element;
   allowedRoles?: string[];
@@ -29,7 +29,10 @@ export default function ProtectedRoute({
       return <Navigate to="/auth" replace />;
     }
 
-    if (allowedRoles && (!userJSON?.role || !allowedRoles.includes(userJSON?.role))) {
+    if (
+      allowedRoles &&
+      (!userJSON?.role || !allowedRoles.includes(userJSON?.role))
+    ) {
       return <Navigate to="/unauthorized" replace />;
     }
 

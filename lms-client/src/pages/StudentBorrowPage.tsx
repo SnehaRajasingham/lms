@@ -32,7 +32,11 @@ export default function StudentBorrowPage() {
       Swal.fire('Success', res.data.message, 'success');
       fetchBooks();
     } catch (err: any) {
-      Swal.fire('Error', err.response?.data?.message || 'Borrow failed.', 'error');
+      Swal.fire(
+        'Error',
+        err.response?.data?.message || 'Borrow failed.',
+        'error',
+      );
     }
   };
 
@@ -42,7 +46,9 @@ export default function StudentBorrowPage() {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold text-gray-800 mb-6">📖 Available Books</h2>
+      <h2 className="text-2xl font-bold text-gray-800 mb-6">
+        📖 Available Books
+      </h2>
       {loading ? (
         <p>Loading...</p>
       ) : (
