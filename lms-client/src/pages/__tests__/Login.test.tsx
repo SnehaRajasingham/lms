@@ -100,4 +100,20 @@ describe('Login Component', () => {
 
     consoleSpy.mockRestore();
   });
+
+  it('prevents submission if fields are empty', async () => {
+    render(<BrowserRouter><Login onSwitch={vi.fn()} /></BrowserRouter>);
+    fireEvent.click(screen.getByRole('button', { name: /sign in/i }));
+    await waitFor(() => {
+      expect(api.post).not.toHaveBeenCalled();
+    });
+  });
+
+  it('calls onSwitch when "Sign up" button is clicked', () => {
+    const switchMock = vi.fn();
+    render(<BrowserRouter><Login onSwitch={switchMock} /></BrowserRouter>);
+    fireEvent.click(screen.getByText(/sign up/i));
+    expect(switchMock).toHaveBeenCalled();
+  });
+  
 });
