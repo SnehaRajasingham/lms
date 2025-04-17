@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const connectDB = require('./config/db');
+const helmet = require('helmet');
 
 // Route files
 const authRoutes = require('./routes/authRoutes');
@@ -11,6 +12,25 @@ const borrowRoutes = require('./routes/borrowRoutes');
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use(helmet());
+app.use((req, res, next) => {
+  const start = process.hrtime();
+
+  res.once('finish', () => {
+    const elapsed = process.hrtime(start);
+    const ms = (elapsed[0] * 1e3 + elapsed[1] / 1e6).toFixed(2);
+
+    if (!res.headersSent) {
+      try {
+        res.append('X-Response-Time', `${ms}ms`);
+      } catch (err) {
+        console.warn('Could not append X-Response-Time:', err.message);
+      }
+    }
+  });
+
+  next();
+});
 
 // Connect MongoDB
 connectDB();
