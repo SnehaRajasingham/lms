@@ -1,6 +1,6 @@
 import './index.css';
 
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import ProtectedRoute from './components/ProtectedRoute';
 import AuthLayout from './pages/AuthLayout';
 import NotFound from './pages/NotFound';
@@ -15,6 +15,8 @@ const App = () => {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/" element={<Navigate to="/auth" replace />} />
+
         <Route
           path="/dashboard"
           element={
