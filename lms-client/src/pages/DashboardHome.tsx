@@ -56,7 +56,7 @@ export default function DashboardHome() {
           <h2 className="text-gray-700 font-semibold text-lg mb-1">
             Fines Due
           </h2>
-          <p className="text-3xl font-bold text-red-500">Rs. 150</p>
+          <p className="text-3xl font-bold text-red-500">£ 150</p>
         </div>
       </div>
 
@@ -73,7 +73,7 @@ export default function DashboardHome() {
             • You returned{' '}
             <span className="font-medium">“Database Systems”</span>
           </li>
-          <li>• Fine of Rs. 50 added for late return</li>
+          <li>• Fine of £50 added for late return</li>
           <li>
             • Reserved <span className="font-medium">“Clean Code”</span>
           </li>
