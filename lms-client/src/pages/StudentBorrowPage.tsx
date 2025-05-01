@@ -38,7 +38,8 @@ export default function StudentBorrowPage() {
         err &&
         typeof err === 'object' &&
         'response' in err &&
-        typeof (err as { response?: { data?: { message?: string } } }).response?.data?.message === 'string'
+        typeof (err as { response?: { data?: { message?: string } } }).response
+          ?.data?.message === 'string'
       ) {
         errorMessage = (err as { response: { data: { message: string } } })
           .response.data.message;

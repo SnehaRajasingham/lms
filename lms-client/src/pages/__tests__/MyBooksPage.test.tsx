@@ -12,9 +12,9 @@ vi.mock('../../services/api');
 // Mock Swal
 vi.mock('sweetalert2', () => ({
   default: {
-    fire: vi.fn()
+    fire: vi.fn(),
   },
-  fire: vi.fn()
+  fire: vi.fn(),
 }));
 
 const mockRecords = [
@@ -39,7 +39,7 @@ const mockRecords = [
     },
     borrowedAt: new Date().toISOString(),
     returnedAt: new Date().toISOString(),
-    fine: 5
+    fine: 5,
   },
 ];
 
@@ -67,7 +67,7 @@ describe('MyBooksPage Component', () => {
 
   it('handles successful book return', async () => {
     (api.post as any).mockResolvedValue({
-      data: { message: 'Returned successfully', fine: 0 }
+      data: { message: 'Returned successfully', fine: 0 },
     });
 
     render(<MyBooksPage />, { wrapper: Wrapper });
@@ -77,13 +77,17 @@ describe('MyBooksPage Component', () => {
 
     await waitFor(() => {
       expect(api.post).toHaveBeenCalledWith('/borrow/return/book1');
-      expect(Swal.fire).toHaveBeenCalledWith('Success', 'Returned successfully', 'success');
+      expect(Swal.fire).toHaveBeenCalledWith(
+        'Success',
+        'Returned successfully',
+        'success',
+      );
     });
   });
 
   it('shows error alert on return failure', async () => {
     (api.post as any).mockRejectedValue({
-      response: { data: { message: 'Already returned' } }
+      response: { data: { message: 'Already returned' } },
     });
 
     render(<MyBooksPage />, { wrapper: Wrapper });
@@ -92,11 +96,14 @@ describe('MyBooksPage Component', () => {
     fireEvent.click(screen.getByRole('button', { name: /return book/i }));
 
     await waitFor(() => {
-      expect(Swal.fire).toHaveBeenCalledWith('Error', 'Already returned', 'error');
+      expect(Swal.fire).toHaveBeenCalledWith(
+        'Error',
+        'Already returned',
+        'error',
+      );
     });
   });
 });
-
 
 // Unit Tests: Validate the rendering of borrowed book details, returned book history, and conditional content based on the dataset.
 // Integration Tests: Confirm the return book logic performs an API call, updates the data, and shows appropriate SweetAlert messages.

@@ -12,9 +12,9 @@ vi.mock('../../services/api');
 // Mock Swal
 vi.mock('sweetalert2', () => ({
   default: {
-    fire: vi.fn()
+    fire: vi.fn(),
   },
-  fire: vi.fn()
+  fire: vi.fn(),
 }));
 
 const mockBooks = [
@@ -23,15 +23,15 @@ const mockBooks = [
     title: 'Book A',
     author: 'Author A',
     isbn: '123456',
-    copiesAvailable: 2
+    copiesAvailable: 2,
   },
   {
     _id: '2',
     title: 'Book B',
     author: 'Author B',
     isbn: '654321',
-    copiesAvailable: 0
-  }
+    copiesAvailable: 0,
+  },
 ];
 
 const Wrapper = ({ children }: { children: React.ReactNode }) => (
@@ -57,13 +57,17 @@ describe('StudentBorrowPage Component', () => {
     render(<StudentBorrowPage />, { wrapper: Wrapper });
 
     await waitFor(() => {
-      const unavailableButton = screen.getByText('Unavailable') as HTMLButtonElement;
+      const unavailableButton = screen.getByText(
+        'Unavailable',
+      ) as HTMLButtonElement;
       expect(unavailableButton).toBeDisabled();
     });
   });
 
   it('calls API and shows success alert when borrowing a book', async () => {
-    (api.post as any).mockResolvedValue({ data: { message: 'Borrowed successfully' } });
+    (api.post as any).mockResolvedValue({
+      data: { message: 'Borrowed successfully' },
+    });
 
     render(<StudentBorrowPage />, { wrapper: Wrapper });
 
@@ -74,13 +78,17 @@ describe('StudentBorrowPage Component', () => {
 
     await waitFor(() => {
       expect(api.post).toHaveBeenCalledWith('/borrow/1');
-      expect(Swal.fire).toHaveBeenCalledWith('Success', 'Borrowed successfully', 'success');
+      expect(Swal.fire).toHaveBeenCalledWith(
+        'Success',
+        'Borrowed successfully',
+        'success',
+      );
     });
   });
 
   it('shows error alert on failed borrow attempt', async () => {
     (api.post as any).mockRejectedValue({
-      response: { data: { message: 'Book already borrowed' } }
+      response: { data: { message: 'Book already borrowed' } },
     });
 
     render(<StudentBorrowPage />, { wrapper: Wrapper });
@@ -90,7 +98,11 @@ describe('StudentBorrowPage Component', () => {
     fireEvent.click(borrowButton);
 
     await waitFor(() => {
-      expect(Swal.fire).toHaveBeenCalledWith('Error', 'Book already borrowed', 'error');
+      expect(Swal.fire).toHaveBeenCalledWith(
+        'Error',
+        'Book already borrowed',
+        'error',
+      );
     });
   });
 });

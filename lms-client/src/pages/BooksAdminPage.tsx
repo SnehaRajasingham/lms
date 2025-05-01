@@ -57,9 +57,15 @@ export default function BooksAdminPage() {
 
       if (
         isAxiosError(err) &&
-        typeof (err.response?.data as { message?: string })?.message === 'string'
+        typeof (err.response?.data as { message?: string })?.message ===
+          'string'
       ) {
-        if (err.response && err.response.data && typeof err.response.data === 'object' && 'message' in err.response.data) {
+        if (
+          err.response &&
+          err.response.data &&
+          typeof err.response.data === 'object' &&
+          'message' in err.response.data
+        ) {
           errorMessage = (err.response.data as { message: string }).message;
         }
       }

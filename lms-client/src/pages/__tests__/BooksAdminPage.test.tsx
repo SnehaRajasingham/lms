@@ -11,9 +11,9 @@ vi.mock('../../services/api');
 // Mock Swal
 vi.mock('sweetalert2', () => ({
   default: {
-    fire: vi.fn(() => Promise.resolve({ isConfirmed: true }))
+    fire: vi.fn(() => Promise.resolve({ isConfirmed: true })),
   },
-  fire: vi.fn(() => Promise.resolve({ isConfirmed: true }))
+  fire: vi.fn(() => Promise.resolve({ isConfirmed: true })),
 }));
 
 const mockBooks = [
@@ -22,15 +22,15 @@ const mockBooks = [
     title: 'Test Book 1',
     author: 'Author 1',
     isbn: '111',
-    copiesAvailable: 5
+    copiesAvailable: 5,
   },
   {
     _id: '2',
     title: 'Test Book 2',
     author: 'Author 2',
     isbn: '222',
-    copiesAvailable: 3
-  }
+    copiesAvailable: 3,
+  },
 ];
 
 const Wrapper = ({ children }: { children: React.ReactNode }) => (
@@ -69,10 +69,14 @@ describe('BooksAdminPage Component', () => {
     render(<BooksAdminPage />, { wrapper: Wrapper });
 
     fireEvent.click(screen.getByRole('button', { name: /add book/i }));
-    expect(screen.getByRole('heading', { name: /add book/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: /add book/i }),
+    ).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole('button', { name: /cancel/i }));
-    expect(screen.queryByRole('heading', { name: /add book/i })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('heading', { name: /add book/i }),
+    ).not.toBeInTheDocument();
   });
 
   it('handles book deletion when confirmed', async () => {
@@ -88,7 +92,7 @@ describe('BooksAdminPage Component', () => {
         text: 'This book will be permanently deleted!',
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonText: 'Yes, delete it!'
+        confirmButtonText: 'Yes, delete it!',
       });
       expect(api.delete).toHaveBeenCalledWith('/books/1');
     });

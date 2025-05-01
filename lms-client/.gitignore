@@ -27,3 +27,5 @@ dist-ssr
 coverage/
 .nyc_output/
 coverage-final.json
+
+*.env
