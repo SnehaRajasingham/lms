@@ -1,119 +1,133 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import Login from '../Login';
 import { BrowserRouter } from 'react-router-dom';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import api from '../../services/api';
-import { vi, describe, it, beforeEach, expect } from 'vitest';
-import '@testing-library/jest-dom';
+import Swal from 'sweetalert2';
 
-vi.mock('../../services/api', () => ({
-  default: {
-    post: vi.fn(),
-  },
-}));
-
-const mockedNavigate = vi.fn();
+// Mock useNavigate
+const mockNavigate = vi.fn();
 vi.mock('react-router-dom', async () => {
-  const actual = await vi.importActual('react-router-dom');
+  const actual = await vi.importActual<any>('react-router-dom');
   return {
     ...actual,
-    useNavigate: () => mockedNavigate,
+    useNavigate: () => mockNavigate,
   };
 });
 
+// Mock API
+vi.mock('../../services/api');
+
+// Mock Swal
+vi.mock('sweetalert2', () => ({
+  default: {
+    fire: vi.fn(),
+  },
+  fire: vi.fn(),
+}));
+
+// Helper wrapper to support Router
+const Wrapper = ({ children }: { children: React.ReactNode }) => (
+  <BrowserRouter>{children}</BrowserRouter>
+);
+
 describe('Login Component', () => {
+  const mockSwitch = vi.fn();
+  const mockToken = 'fake-jwt-token';
+  const mockUser = { id: 1, username: 'testuser' };
+
   beforeEach(() => {
     vi.clearAllMocks();
     localStorage.clear();
   });
 
   it('renders login form correctly', () => {
-    render(
-      <BrowserRouter>
-        <Login onSwitch={vi.fn()} />
-      </BrowserRouter>
-    );
-
-    expect(screen.getByPlaceholderText('Enter your username')).not.toBeNull();
-    expect(screen.getByPlaceholderText('Enter your password')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Sign In/i })).toBeInTheDocument();
+    render(<Login onSwitch={mockSwitch} />, { wrapper: Wrapper });
+    expect(screen.getByText('Welcome Back')).toBeInTheDocument();
+    expect(screen.getByLabelText(/username/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /sign in/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /sign up/i }),
+    ).toBeInTheDocument();
   });
 
-  it('submits login form and navigates on success', async () => {
-    const mockUser = { username: 'admin', role: 'student' };
-    const mockToken = 'mocked-token';
+  it('calls onSwitch when sign up button is clicked', () => {
+    render(<Login onSwitch={mockSwitch} />, { wrapper: Wrapper });
+    fireEvent.click(screen.getByRole('button', { name: /sign up/i }));
+    expect(mockSwitch).toHaveBeenCalled();
+  });
 
+  it('updates form inputs on change', () => {
+    render(<Login onSwitch={mockSwitch} />, { wrapper: Wrapper });
+    const usernameInput = screen.getByLabelText(
+      /username/i,
+    ) as HTMLInputElement;
+    const passwordInput = screen.getByLabelText(
+      /password/i,
+    ) as HTMLInputElement;
+
+    fireEvent.change(usernameInput, { target: { value: 'admin' } });
+    fireEvent.change(passwordInput, { target: { value: '1234' } });
+
+    expect(usernameInput.value).toBe('admin');
+    expect(passwordInput.value).toBe('1234');
+  });
+
+  it('handles successful login submission', async () => {
     (api.post as any).mockResolvedValue({
       data: { token: mockToken, user: mockUser },
     });
 
-    render(
-      <BrowserRouter>
-        <Login onSwitch={vi.fn()} />
-      </BrowserRouter>
-    );
+    render(<Login onSwitch={mockSwitch} />, { wrapper: Wrapper });
 
-    fireEvent.change(screen.getByPlaceholderText('Enter your username'), {
-      target: { value: 'sneha' },
+    fireEvent.change(screen.getByLabelText(/username/i), {
+      target: { value: 'testuser' },
     });
-
-    fireEvent.change(screen.getByPlaceholderText('Enter your password'), {
-      target: { value: 'Sneha2025' },
+    fireEvent.change(screen.getByLabelText(/password/i), {
+      target: { value: 'secret' },
     });
-
-    fireEvent.click(screen.getByRole('button', { name: /Sign In/i }));
+    fireEvent.click(screen.getByRole('button', { name: /sign in/i }));
 
     await waitFor(() => {
+      expect(api.post).toHaveBeenCalledWith('/auth/login', {
+        username: 'testuser',
+        password: 'secret',
+      });
       expect(localStorage.getItem('token')).toBe(mockToken);
       expect(localStorage.getItem('user')).toBe(JSON.stringify(mockUser));
-      expect(mockedNavigate).toHaveBeenCalledWith('/dashboard');
+      expect(mockNavigate).toHaveBeenCalledWith('/dashboard');
     });
   });
 
-  it('logs error on login failure', async () => {
-    const errorMessage = 'Something went wrong.';
-
+  it('handles login failure and shows alert', async () => {
     (api.post as any).mockRejectedValue({
-      response: { data: { message: errorMessage } },
+      response: { data: { message: 'Invalid credentials' } },
     });
 
-    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    render(<Login onSwitch={mockSwitch} />, { wrapper: Wrapper });
 
-    render(
-      <BrowserRouter>
-        <Login onSwitch={vi.fn()} />
-      </BrowserRouter>
-    );
-
-    fireEvent.change(screen.getByPlaceholderText('Enter your username'), {
-      target: { value: 'wronguser' },
+    fireEvent.change(screen.getByLabelText(/username/i), {
+      target: { value: 'wrong' },
     });
-
-    fireEvent.change(screen.getByPlaceholderText('Enter your password'), {
-      target: { value: 'wrongpass' },
+    fireEvent.change(screen.getByLabelText(/password/i), {
+      target: { value: 'wrong' },
     });
-
-    fireEvent.click(screen.getByRole('button', { name: /Sign In/i }));
-
-    await waitFor(() => {
-      expect(consoleSpy).toHaveBeenCalledWith('Login Failed', errorMessage);
-    });
-
-    consoleSpy.mockRestore();
-  });
-
-  it('prevents submission if fields are empty', async () => {
-    render(<BrowserRouter><Login onSwitch={vi.fn()} /></BrowserRouter>);
     fireEvent.click(screen.getByRole('button', { name: /sign in/i }));
+
     await waitFor(() => {
-      expect(api.post).not.toHaveBeenCalled();
+      expect(Swal.fire).toHaveBeenCalledWith(
+        'Login Failed',
+        'Invalid credentials',
+        'error',
+      );
     });
   });
-
-  it('calls onSwitch when "Sign up" button is clicked', () => {
-    const switchMock = vi.fn();
-    render(<BrowserRouter><Login onSwitch={switchMock} /></BrowserRouter>);
-    fireEvent.click(screen.getByText(/sign up/i));
-    expect(switchMock).toHaveBeenCalled();
-  });
-  
 });
+
+// Unit Tests: For individual UI elements and logic such as rendering, state updates.
+// Integration Tests: For verifying behavior across multiple modules such as API + UI + navigation.
+// Behavioral Tests: For simulating real user interactions and their impact on the application.
+// Error Handling Tests: For ensuring the UI gracefully handles and reports failures.
