@@ -65,9 +65,8 @@ export default function Register({ onSwitch }: Props) {
       const response = await api.post('/auth/register', formData);
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('user', JSON.stringify(response.data.user));
-      Swal.fire('Success', 'Registration successful!', 'success').then(() => {
-        navigate('/dashboard');
-      });
+      await Swal.fire('Success', 'Registration successful!', 'success');
+      navigate('/dashboard');
     } catch (err: unknown) {
       let errorMessage = 'Something went wrong.';
 
@@ -75,7 +74,8 @@ export default function Register({ onSwitch }: Props) {
         err &&
         typeof err === 'object' &&
         'response' in err &&
-        typeof (err as { response?: { data?: { message?: string } } }).response?.data?.message === 'string'
+        typeof (err as { response?: { data?: { message?: string } } }).response
+          ?.data?.message === 'string'
       ) {
         errorMessage = (err as { response: { data: { message: string } } })
           .response.data.message;
@@ -93,12 +93,16 @@ export default function Register({ onSwitch }: Props) {
         </h2>
 
         <div>
-          <label className="block mb-1 font-medium text-gray-700">
+          <label
+            className="block mb-1 font-medium text-gray-700"
+            htmlFor="username"
+          >
             Username
           </label>
           <input
             type="text"
             name="username"
+            id="username"
             value={formData.username}
             onChange={handleChange}
             className="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
@@ -107,10 +111,16 @@ export default function Register({ onSwitch }: Props) {
         </div>
 
         <div>
-          <label className="block mb-1 font-medium text-gray-700">Email</label>
+          <label
+            className="block mb-1 font-medium text-gray-700"
+            htmlFor="email"
+          >
+            Email
+          </label>
           <input
             type="email"
             name="email"
+            id="email"
             value={formData.email}
             onChange={handleChange}
             className="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
@@ -119,12 +129,16 @@ export default function Register({ onSwitch }: Props) {
         </div>
 
         <div>
-          <label className="block mb-1 font-medium text-gray-700">
+          <label
+            className="block mb-1 font-medium text-gray-700"
+            htmlFor="password"
+          >
             Password
           </label>
           <input
             type="password"
             name="password"
+            id="password"
             value={formData.password}
             onChange={handleChange}
             className="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"

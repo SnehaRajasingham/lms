@@ -38,11 +38,8 @@ export default function Login({ onSwitch }: Props) {
       navigate('/dashboard');
     } catch (error: unknown) {
       const errorMessage =
-        (error instanceof Error &&
-          'response' in error &&
-          (error as { response?: { data?: { message?: string } } }).response
-            ?.data?.message) ||
-        'Something went wrong.';
+        (error as any)?.response?.data?.message || 'Something went wrong.';
+
       Swal.fire('Login Failed', errorMessage, 'error');
       console.error('Login Failed', errorMessage);
     }
@@ -56,11 +53,15 @@ export default function Login({ onSwitch }: Props) {
         </h2>
 
         <div>
-          <label className="block text-gray-700 font-medium mb-1">
+          <label
+            className="block text-gray-700 font-medium mb-1"
+            htmlFor="username"
+          >
             Username
           </label>
           <input
             type="text"
+            id="username"
             name="username"
             value={formData.username}
             onChange={handleChange}
@@ -71,11 +72,15 @@ export default function Login({ onSwitch }: Props) {
         </div>
 
         <div>
-          <label className="block text-gray-700 font-medium mb-1">
+          <label
+            className="block text-gray-700 font-medium mb-1"
+            htmlFor="password"
+          >
             Password
           </label>
           <input
             type="password"
+            id="password"
             name="password"
             value={formData.password}
             onChange={handleChange}
