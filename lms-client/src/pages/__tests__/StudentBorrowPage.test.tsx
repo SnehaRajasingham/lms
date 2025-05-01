@@ -1,4 +1,4 @@
-// StudentBorrowPage.test.tsx
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import StudentBorrowPage from '../StudentBorrowPage';
 import { BrowserRouter } from 'react-router-dom';

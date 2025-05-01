@@ -1,4 +1,4 @@
-// MyBooksPage.test.tsx
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import MyBooksPage from '../MyBooksPage';
 import { BrowserRouter } from 'react-router-dom';
