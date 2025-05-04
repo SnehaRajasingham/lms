@@ -1,24 +1,24 @@
-# 📚 Library Management System (LMS)
+# Library Management System (LMS)
 
 This is a full-stack **Library Management System** built with **Node.js**, **Express**, **MongoDB**, and a **React + TypeScript** frontend. It allows administrators to manage books and users, and students to borrow and return books. The system includes **authentication**, **role-based access control**, **fine calculation**, and comprehensive **software testing** using **Vitest**, **Jest**, and **Postman**.
 
 ---
 
-## 🚀 Features
+## Features
 
-### 👨‍🏫 Admin
+### Admin
 - Add, update, delete books
 - View all available books
 - Search/filter books by title or author
 
-### 👩‍🎓 Student
+### Student
 - Register and login securely
 - Borrow available books
 - Return borrowed books
 - View current and historical borrow records
 - Get fined if books are returned late
 
-### 🔐 Authentication & Security
+### Authentication & Security
 - JWT-based authentication
 - Role-based access (admin, student)
 - Helmet security headers
@@ -26,17 +26,17 @@ This is a full-stack **Library Management System** built with **Node.js**, **Exp
 
 ---
 
-## 🧪 Testing & Quality Assurance
+## Testing & Quality Assurance
 
 This project was developed as part of a **Software Quality Management** coursework, with a strong emphasis on testing strategies:
 
-### ✅ Frontend Tests
+### Frontend Tests
 - **Unit Tests** with Vitest + React Testing Library
 - **Integration Tests** for login/register, book CRUD
 - **Error handling tests** for form validations and failed submissions
 - **Coverage Report**: Achieves over 90% test coverage for main pages
 
-### ✅ Backend Tests
+### Backend Tests
 - **Unit & Integration Tests** using Jest + Supertest
 - Tested endpoints:
   - `/api/auth/register`
@@ -45,16 +45,16 @@ This project was developed as part of a **Software Quality Management** coursewo
   - `/api/borrow/:id`
 - Edge cases, security headers, and error handling validated
 
-### ✅ Tools Used
-- 🧪 Jest
-- 🧪 Vitest
-- 🧪 Postman
-- ✅ ESLint & Prettier
-- ✅ Coverage reporting via V8 and Istanbul
+### Tools Used
+- Jest
+- Vitest
+- Postman
+- ESLint & Prettier
+- Coverage reporting via V8 and Istanbul
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 | Layer       | Tech                                         |
 |-------------|----------------------------------------------|
@@ -67,7 +67,7 @@ This project was developed as part of a **Software Quality Management** coursewo
 
 ---
 
-## 🧰 Project Structure
+## Project Structure
 
 ```bash
 ├── lms-client             # React frontend
